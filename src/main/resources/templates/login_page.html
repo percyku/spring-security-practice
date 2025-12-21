@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <title>Login Page</title>
+</head>
+<body>
+<h1>Login</h1>
+
+
+<div>
+<h4><a th:href="@{/oauth2/authorization/github}">Login with GitHub</a></h4>
+</div>
+
+
+<form th:action="@{/login}" method="post">
+  <div>
+    <label> User Name : <input type="text" name="username"/> </label>
+  </div>
+  <div>
+    <label> Password: <input type="password" name="password"/> </label>
+  </div>
+  <div>
+    <input type="submit" value="Sign In"/>
+  </div>
+</form>
+</body>
+</html>
