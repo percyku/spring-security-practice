@@ -1,6 +1,7 @@
 package com.percyku.spring_security.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,6 +24,8 @@ import java.util.List;
 @EnableWebSecurity
 public class MySecurityConfig {
 
+    @Value("${frontend.url.domain}")
+    private String domain;
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -105,7 +108,8 @@ public class MySecurityConfig {
         CorsConfiguration config= new CorsConfiguration();
 //        config.setAllowedOrigins(List.of("*"));
 //        config.setAllowedOrigins(List.of("http://127.0.0.1:5500","null"));
-        config.setAllowedOrigins(List.of("http://localhost:3000","http://localhost:5173","null"));
+//        config.setAllowedOrigins(List.of("http://localhost:3000","http://localhost:5173","null"));
+        config.setAllowedOrigins(List.of(domain,"null"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("*"));
         config.setAllowCredentials(true);

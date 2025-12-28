@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,9 +28,11 @@ public class CustomOAuth2LoginSuccessHandler extends SavedRequestAwareAuthentica
     UserRepository userRepository;
 
 
-//    @Value("${frontend.url}")
-    private String frontendUrl;
+    @Value("${frontend.url.domain}")
+    private String domain;
 
+    @Value("${frontend.url.detail}")
+    private String urlDetail;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
 
@@ -81,7 +84,9 @@ public class CustomOAuth2LoginSuccessHandler extends SavedRequestAwareAuthentica
 
 
         this.setAlwaysUseDefaultTargetUrl(true);
-        this.setDefaultTargetUrl("http://localhost:5173/web-layout-training-vite/pages/index.html?id="+id);
+        //domain :ex: http://localhost:5173/
+        //urlDetail :ex: web-layout-XXX/XXX/XXX/page.html
+        this.setDefaultTargetUrl(domain+urlDetail+"?errorMsg=");
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
