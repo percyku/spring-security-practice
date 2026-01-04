@@ -25,12 +25,19 @@ public class UserServiceImp implements UserService {
             return -1;
         }
         User newUser=new User("", passwordEncoder.encode(member.getPassword()),member.getEmail(),"","");
-
         userRepository.save(newUser);
-
-
-
         return 1;
+    }
+
+    @Override
+    public Optional<User> findUserWithRoleByEmail(String email) {
+
+        Optional<User> optionalUser = userRepository.findUserWithRoleByEmail(email);
+
+        if(optionalUser.isPresent()){
+            return optionalUser;
+        }
+        return Optional.empty();
     }
 
     @Override

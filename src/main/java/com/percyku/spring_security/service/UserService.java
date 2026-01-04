@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface UserService {
     int saveUser(UserRegisterRequest user);
 
+    Optional<User> findUserWithRoleByEmail(String email);
 
     Optional<User> updateUser(UserUpdateRequest user);
 

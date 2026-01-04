@@ -29,8 +29,6 @@ import java.util.regex.Pattern;
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
-    @Autowired
     UserService userService;
     @PostMapping("/loginUser")
     public ResponseEntity<String> login(Authentication authentication,HttpServletRequest request, HttpServletResponse response){
@@ -38,8 +36,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("login Success!");
     }
 
-    @GetMapping("/welcome")
-    public ResponseEntity<User> hi(Authentication authentication,HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @GetMapping("/checkUserStatus")
+    public ResponseEntity<User> checkUserStatus(Authentication authentication,HttpServletRequest request, HttpServletResponse response) throws Exception {
         String userEmail = "";
         String regex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}";
         Pattern pattern =Pattern.compile(regex);
@@ -50,13 +48,11 @@ public class UserController {
             Map<String, Object> attributes =principal.getAttributes();
             userEmail =attributes.get("email").toString();
         }
-        Optional<User> optionalUser =userRepository.findUserWithRoleByEmail(userEmail);
+        Optional<User> optionalUser =userService.findUserWithRoleByEmail(userEmail);
         if(!optionalUser.isPresent()){
             throw new Exception("Please check this user["+userEmail+"] is exist or not");
         }else{
             User existUser = optionalUser.get();
-            System.out.println(existUser);
-//            return ResponseEntity.status(HttpStatus.OK).body(existUser.getUserName()+" welcome back!");
             return ResponseEntity.status(HttpStatus.OK).body(existUser);
         }
     }

@@ -76,7 +76,7 @@ public class MySecurityConfig {
                 // 設定 api 的權限控制
                 .authorizeHttpRequests(request -> request
                                 .requestMatchers("/registerUser","/login").permitAll()
-                                .requestMatchers("/loginUser","/logoutUser","/updateUser","/welcome").authenticated()
+                                .requestMatchers("/loginUser","/logoutUser","/updateUser","/checkUserStatus").authenticated()
                                 .anyRequest().denyAll()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(authenticationEntryPoint))
