@@ -2,6 +2,7 @@ package com.percyku.spring_security.controller;
 
 import com.percyku.spring_security.dao.UserRepository;
 import com.percyku.spring_security.dto.UserRegisterRequest;
+import com.percyku.spring_security.dto.UserUpdateRequest;
 import com.percyku.spring_security.model.User;
 import com.percyku.spring_security.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,8 +75,16 @@ public class UserController {
     }
 
     @PostMapping("/updateUser")
-    public ResponseEntity<String> updateUser(HttpServletRequest request, HttpServletResponse response){
-        return ResponseEntity.status(HttpStatus.OK).body("update ok");
+    public ResponseEntity<User> updateUser(@RequestBody @Valid UserUpdateRequest userUpdateRequest,HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+
+        Optional<User> optionalUser= userService.updateUser(userUpdateRequest);
+
+        if(optionalUser.isEmpty()){
+            throw new Exception("Please check this user["+userUpdateRequest.getEmail()+"] is exist or not");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(optionalUser.get());
     }
 
 

@@ -11,7 +11,6 @@ public class UserUpdateRequest {
     @NotBlank(message = "email cannot empty")
     @Email(message = "please check your email is correct or not")
     private String email;
-    @NotBlank(message = "password cannot empty")
     private String password;
     @NotBlank(message = "username cannot empty")
     private String username;
@@ -25,8 +24,8 @@ public class UserUpdateRequest {
 
     }
 
-    @NotEmpty(message = "roles cannot empty")
-    private List<String> roles;
+//    @NotEmpty(message = "roles cannot empty")
+//    private List<String> roles;
 
     public String getEmail() {
         return email;
@@ -68,13 +67,13 @@ public class UserUpdateRequest {
         this.last_name = last_name;
     }
 
-    public List<String> getRoles() {
-        return roles;
-    }
+//    public List<String> getRoles() {
+//        return roles;
+//    }
 
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-    }
+//    public void setRoles(List<String> roles) {
+//        this.roles = roles;
+//    }
 
 
     @Override
@@ -85,7 +84,7 @@ public class UserUpdateRequest {
                 ", username='" + username + '\'' +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
-                ", roles=" + roles +
+//                ", roles=" + roles +
                 '}';
     }
 }
