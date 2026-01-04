@@ -1,27 +1,36 @@
 package com.percyku.spring_security.controller;
 
 import com.percyku.spring_security.dao.UserRepository;
+import com.percyku.spring_security.dto.UserRegisterRequest;
 import com.percyku.spring_security.model.User;
+import com.percyku.spring_security.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+@Validated
 @RestController
 public class UserController {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserService userService;
     @PostMapping("/loginUser")
     public ResponseEntity<String> login(Authentication authentication,HttpServletRequest request, HttpServletResponse response){
         String username = authentication.getName();
@@ -29,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/welcome")
-    public ResponseEntity<String> hi(Authentication authentication,HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ResponseEntity<User> hi(Authentication authentication,HttpServletRequest request, HttpServletResponse response) throws Exception {
         String userEmail = "";
         String regex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}";
         Pattern pattern =Pattern.compile(regex);
@@ -46,14 +55,21 @@ public class UserController {
         }else{
             User existUser = optionalUser.get();
             System.out.println(existUser);
-            return ResponseEntity.status(HttpStatus.OK).body(existUser.getUserName()+" welcome back!");
+//            return ResponseEntity.status(HttpStatus.OK).body(existUser.getUserName()+" welcome back!");
+            return ResponseEntity.status(HttpStatus.OK).body(existUser);
         }
     }
 
 
 
     @PostMapping("/registerUser")
-    public ResponseEntity<String> register(HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<String> register(@RequestBody @Valid UserRegisterRequest member)throws Exception{
+
+        int res = userService.saveUser(member);
+
+        if(res ==-1){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Please check this user["+member.getEmail()+"] is exist ");
+        }
         return ResponseEntity.status(HttpStatus.OK).body("register ok");
     }
 
@@ -61,6 +77,8 @@ public class UserController {
     public ResponseEntity<String> updateUser(HttpServletRequest request, HttpServletResponse response){
         return ResponseEntity.status(HttpStatus.OK).body("update ok");
     }
+
+
 
 
 

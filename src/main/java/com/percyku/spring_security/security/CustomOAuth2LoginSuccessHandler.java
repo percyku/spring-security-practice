@@ -39,20 +39,34 @@ public class CustomOAuth2LoginSuccessHandler extends SavedRequestAwareAuthentica
         OAuth2AuthenticationToken oAuth2AuthenticationToken =(OAuth2AuthenticationToken) authentication;
         String id= "";
 
-        if ("github".equals(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId())) {
+
+
+        if("github".equals(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId()) ||
+                "google".equals(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId())){
+
             DefaultOAuth2User principal = (DefaultOAuth2User) authentication.getPrincipal();
             Map<String, Object> attributes = principal.getAttributes();
+//            attributes.forEach((key, value) -> {
+//                System.out.println(key + "=" + value + " ");
+//            });
 
 
             String email = attributes.getOrDefault("email", "").toString();
             String name = attributes.getOrDefault("name", "").toString();
 
+            if("github".equals(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId())){
+                id=attributes.getOrDefault("id", "").toString();
+            }else if("google".equals(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId())){
+                id=attributes.getOrDefault("sub", "").toString();
+            }
+
+
+
+
+
             Optional<User> optionalUser =userRepository.findUserWithRoleByEmail(email);
 
             if(!optionalUser.isPresent()){
-
-
-
                 User tmpUser =new User(name,"",email,"","");
                 userRepository.save(tmpUser);
 
@@ -76,17 +90,14 @@ public class CustomOAuth2LoginSuccessHandler extends SavedRequestAwareAuthentica
             }
 
 
-            id=attributes.getOrDefault("id", "").toString();
-
 
 
         }
 
-
         this.setAlwaysUseDefaultTargetUrl(true);
         //domain :ex: http://localhost:5173/
         //urlDetail :ex: web-layout-XXX/XXX/XXX/page.html
-        this.setDefaultTargetUrl(domain+urlDetail+"?errorMsg=");
+        this.setDefaultTargetUrl(domain+urlDetail+"?id="+id);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
